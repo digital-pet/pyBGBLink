@@ -36,12 +36,12 @@ async def send_button_forever(server):
     #instantiate the packets
     DownPacket = pyBGBLink.JoypadPacket()
     UpPacket = pyBGBLink.JoypadPacket()
-    
+
     #set the packet flags appropriately
     DownPacket.button = DownPacket.defines.B_DOWN
     UpPacket.button = UpPacket.defines.B_DOWN
     DownPacket.isPressed = True
-    
+
     while True:
         await asyncio.sleep(1)
         server.send_packet(DownPacket.assemble())

@@ -48,12 +48,14 @@ async def send_button_forever(server):
         await asyncio.sleep(0.025)
         server.send_packet(UpPacket.assemble())
 
-# standard asyncio code to start the server and the send_button_forever loop
-loop = asyncio.get_event_loop()
-asyncio.ensure_future(server.start())
-asyncio.ensure_future(send_button_forever(server))
+#main program code
+async def main():
+    await asyncio.gather(
+        server.start(),
+        send_button_forever(server))
+
 try:
-    loop.run_forever()
+    asyncio.run(main())
 except KeyboardInterrupt:
     print('Ctrl-C received, quitting immediately')
     logging.critical('Ctrl-C received, quitting immediately')

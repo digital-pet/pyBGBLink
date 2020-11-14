@@ -210,13 +210,16 @@ class GenericPacket:
             self.b3 = FixedInt(b3, 8)
             self.i0 = FixedInt(i0, 8)
 
-    def assemble(self):
+    def _assemble(self):
         """assemble Assembles the packet into a Bytes object
 
         Returns:
             Bytes: a raw BGBLink packet
         """
         return pack('=bbbbi',self.b0, self.b1, self.b2, self.b3, self.i0)
+        
+    def __bytes__(self):
+        return self._assemble()
 
 class VersionPacket(GenericPacket):
     """VersionPacket A version packet.
@@ -275,14 +278,14 @@ class JoypadPacket(GenericPacket):
         self.isPressed = bool(self.b1 & self.defines.B_ISPRESSED)
         self.button = self.b1 & 7
 
-    def assemble(self):
+    def _assemble(self):
         """assemble Assembles the packet into a Bytes object.
 
         Returns:
             Bytes: a raw BGBLink packet
         """
         self.b1 = (int(self.isPressed) * self.defines.B_ISPRESSED) | self.button
-        return super().assemble()
+        return super()._assemble()
 
 class Sync1Packet(GenericPacket):
     """Sync1Packet [summary]
@@ -301,7 +304,7 @@ class Sync1Packet(GenericPacket):
         self.doublespeed = bool(self.b2 & 4)
         self.timestamp = self.i0
         
-    def assemble(self):
+    def _assemble(self):
         """assemble Assembles the packet into a Bytes object.
         
         Returns:
@@ -315,7 +318,7 @@ class Sync1Packet(GenericPacket):
         #add the doublespeed bit
         self.b2 = self.b2 | (int(self.doublespeed) * 4)
         self.i0 = self.timestamp
-        return super().assemble()
+        return super()._assemble()
         
 
 class Sync2Packet(GenericPacket):
@@ -332,7 +335,7 @@ class Sync2Packet(GenericPacket):
             self.b0 = self.defines.C_SYNC2
         self.data = self.b1
 
-    def assemble(self):
+    def _assemble(self):
         """assemble Assembles the packet into a Bytes object.
 
         Returns:
@@ -341,7 +344,7 @@ class Sync2Packet(GenericPacket):
         self.b1 = FixedInt(self.data, 8)
         #sanity check, b2 should always be 0x80
         self.b2 = FixedInt(0x80, 8)
-        return super().assemble()
+        return super()._assemble()
 
 class Sync3Packet(GenericPacket):
     """Sync3Packet [summary]

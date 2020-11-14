@@ -30,7 +30,7 @@ defines = SimpleNamespace(
             C_SYNC2                     = FixedInt(0x69, 8),
             C_SYNC3                     = FixedInt(0x6A, 8),
             C_STATUS                    = FixedInt(0x6C, 8),
-            C_WANTDISCONNECT            = FixedInt(0x6D, 8)
+            C_WANTDISCONNECT            = FixedInt(0x6D, 8),
             #button values (bits 0-2)
             B_RIGHT                     = FixedInt(0x00, 8),    #b'000'
             B_LEFT                      = FixedInt(0x01, 8),    #b'001'
@@ -197,7 +197,7 @@ class GenericPacket:
     def __init__(self, raw_packet = None):
         self.defines = defines
         if not raw_packet:
-            self.b0 = FixedIntt(0x00, 8) # command number
+            self.b0 = FixedInt(0x00, 8) # command number
             self.b1 = FixedInt(0x00, 8) # data
             self.b2 = FixedInt(0x00, 8) # data
             self.b3 = FixedInt(0x00, 8) # reserved
@@ -281,7 +281,7 @@ class JoypadPacket(GenericPacket):
         Returns:
             Bytes: a raw BGBLink packet
         """
-        self.b1 = (int(self.isPressed) * self.defines.B_ISPRESSED) | self.button
+        self.b1 = FixedInt(int(self.isPressed) * int(self.defines.B_ISPRESSED), 8) | self.button
         return super().assemble()
 
 class Sync1Packet(GenericPacket):

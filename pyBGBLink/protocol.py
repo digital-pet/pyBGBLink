@@ -281,7 +281,7 @@ class JoypadPacket(GenericPacket):
         Returns:
             Bytes: a raw BGBLink packet
         """
-        self.b1 = FixedInt(int(self.isPressed) * int(self.defines.B_ISPRESSED), 8) | self.button
+        self.b1 = self.button | (self.defines.B_ISPRESSED * int(self.isPressed)) 
         return super().assemble()
 
 class Sync1Packet(GenericPacket):

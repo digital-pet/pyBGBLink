@@ -44,9 +44,9 @@ async def send_button_forever(client):
 
     while True:
         await asyncio.sleep(1)
-        client.send_packet(DownPacket)
+        client.send_packet(DownPacket.assemble())
         await asyncio.sleep(0.025)
-        client.send_packet(UpPacket)
+        client.send_packet(UpPacket.assemble())
 
 #main program code
 async def main():

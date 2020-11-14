@@ -43,7 +43,7 @@ class Peer(BGBProtocol):
 
         # version packet should be sent immediately
         version = VersionPacket()
-        self.send_packet(version)        
+        self.send_packet(version.assemble())        
 
     async def _read_loop(self):
         """The asynchronous read loop.
@@ -83,7 +83,7 @@ class Peer(BGBProtocol):
 
         status = StatusPacket()
         status.b1 = self.ownstatus
-        self.send_packet(status)
+        self.send_packet(status.assemble())
 
     def _on_status(self, packet):
         """The handler for StatusPacket packets
@@ -125,7 +125,7 @@ class ProxyPeer(Peer):
         """
         super()._on_sync1(packet)
         if self.peer:
-            self.peer.send_packet(packet)
+            self.peer.send_packet(packet.assemble())
 
     def _on_sync2(self, packet):
         """_on_sync2: The handler for Sync2Packet packets
@@ -135,7 +135,7 @@ class ProxyPeer(Peer):
         """
         super()._on_sync2(packet)
         if self.peer:
-            self.peer.send_packet(packet)
+            self.peer.send_packet(packet.assemble())
 
     def _on_sync3(self, packet):
         """_on_sync3: The handler for Sync3Packet packets
@@ -145,7 +145,7 @@ class ProxyPeer(Peer):
         """
         super()._on_sync3(packet)
         if self.peer:
-            self.peer.send_packet(packet)
+            self.peer.send_packet(packet.assemble())
 
     def _on_status(self, packet):
         """_on_status: The handler for StatusPacket packets
@@ -155,7 +155,7 @@ class ProxyPeer(Peer):
         """
         super()._on_status(packet)
         if self.peer:
-            self.peer.send_packet(packet)
+            self.peer.send_packet(packet.assemble())
     
     def _on_want_disconnect(self, packet):
         """_on_want_disconnect: The handler for WantDiscoonectPacket packets
@@ -165,7 +165,7 @@ class ProxyPeer(Peer):
         """
         super()._on_want_disconnect(packet)
         if self.peer:
-            self.peer.send_packet(packet)
+            self.peer.send_packet(packet.assemble())
             
     async def connect(self, peer):
         """connect: Connects two peers together to start proxying data
@@ -176,7 +176,7 @@ class ProxyPeer(Peer):
         self.peer = peer
         status = StatusPacket()
         status.b1 = self.peerstatus or self.ownstatus
-        self.peer.send_packet(status)
+        self.peer.send_packet(status.assemble())
         asyncio.create_task(self._maintain_connection())
         
     async def _maintain_connection(self):

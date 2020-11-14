@@ -211,15 +211,13 @@ class GenericPacket:
             self.i0 = FixedInt(i0, 8)
 
     def _assemble(self):
-        """assemble Assembles the packet into a Bytes object
-
-        Returns:
-            Bytes: a raw BGBLink packet
+        """_assemble - Synchronizes the friendly fields with the low-level packet data
         """
-        return pack('=bbbbi',self.b0, self.b1, self.b2, self.b3, self.i0)
-        
+        pass
+
     def __bytes__(self):
-        return self._assemble()
+        self._assemble()
+        return pack('=bbbbi',self.b0, self.b1, self.b2, self.b3, self.i0)
 
 class VersionPacket(GenericPacket):
     """VersionPacket A version packet.
@@ -279,13 +277,9 @@ class JoypadPacket(GenericPacket):
         self.button = self.b1 & 7
 
     def _assemble(self):
-        """assemble Assembles the packet into a Bytes object.
-
-        Returns:
-            Bytes: a raw BGBLink packet
+        """_assemble - Synchronizes the friendly fields with the low-level packet data
         """
         self.b1 = (int(self.isPressed) * self.defines.B_ISPRESSED) | self.button
-        return super()._assemble()
 
 class Sync1Packet(GenericPacket):
     """Sync1Packet [summary]
@@ -299,16 +293,14 @@ class Sync1Packet(GenericPacket):
         super().__init__(raw_packet)
         if not self.b0:
             self.b0 = self.defines.C_SYNC1
+            self.b2 = FixedInt(0x81, 8) #bits 1 and 7 of b2 should always be 1
         self.data = self.b1
         self.highspeed = bool(self.b2 & 2)
         self.doublespeed = bool(self.b2 & 4)
         self.timestamp = self.i0
         
     def _assemble(self):
-        """assemble Assembles the packet into a Bytes object.
-        
-        Returns:
-            Bytes: a raw BGBLink packet
+        """_assemble - Synchronizes the friendly fields with the low-level packet data
         """
         self.b1 = FixedInt(self.data, 8)
         #sanity check, bits 1 and 7 of b2 should always be 1
@@ -318,7 +310,6 @@ class Sync1Packet(GenericPacket):
         #add the doublespeed bit
         self.b2 = self.b2 | (int(self.doublespeed) * 4)
         self.i0 = self.timestamp
-        return super()._assemble()
         
 
 class Sync2Packet(GenericPacket):
@@ -333,18 +324,15 @@ class Sync2Packet(GenericPacket):
         super().__init__(raw_packet)
         if not self.b0:
             self.b0 = self.defines.C_SYNC2
+            self.b2 = FixedInt(0x80, 8) #b2 should always be 0x80
         self.data = self.b1
 
     def _assemble(self):
-        """assemble Assembles the packet into a Bytes object.
-
-        Returns:
-            Bytes: a raw BGBLink packet
+        """_assemble - Synchronizes the friendly fields with the low-level packet data
         """
         self.b1 = FixedInt(self.data, 8)
         #sanity check, b2 should always be 0x80
         self.b2 = FixedInt(0x80, 8)
-        return super()._assemble()
 
 class Sync3Packet(GenericPacket):
     """Sync3Packet [summary]

@@ -12,6 +12,7 @@ ProxyServer class will automatically match connected ProxyPeer clients, while st
   
 ## Possible future projects:  
 DMG-07 4-player link cable emulation 
+Faceball 2000 ring link mode
 
 ## Versioning
 This project follows the tradition of "funny numbers" rather than any formalized versioning system. Numbers will count up, bigger numbers mean newer.
